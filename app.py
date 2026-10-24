@@ -120,7 +120,7 @@ def highlight_status(val):
     return ''
 
 st.dataframe(
-    df_stock.style.applymap(highlight_status, subset=["Emplacement / Statut"]),
+    df_stock.style.map(highlight_status, subset=["Emplacement / Statut"]),
     use_container_width=True
 )
 
