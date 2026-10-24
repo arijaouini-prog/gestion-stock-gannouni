@@ -9,7 +9,7 @@ st.set_page_config(
     layout="wide"
 )
 
-EXCEL_FILE = "stock_laboratoire_gannouni_exemple.xlsx"
+EXCEL_FILE = "stock.xlsx"
 
 # 2. Fonction pour charger les données Excel
 @st.cache_data(ttl=1)
