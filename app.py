@@ -15,9 +15,15 @@ EXCEL_FILE = "stock.xlsx"
 @st.cache_data(ttl=1)
 def charger_donnees():
     if os.path.exists(EXCEL_FILE):
-        return pd.read_excel(EXCEL_FILE, sheet_name="Stock Automates")
+        # On tente de lire d'abord en ignorant les 3 premières lignes (structure initiale avec titre)
+        df = pd.read_excel(EXCEL_FILE, sheet_name="Stock Automates", skiprows=3)
+        
+        # Si 'Automate' n'est pas dans les colonnes, cela veut dire que le fichier a déjà été sauvegardé en format brut
+        if "Automate" not in df.columns:
+            df = pd.read_excel(EXCEL_FILE, sheet_name="Stock Automates")
+        return df
     else:
-        # Fallback si le fichier Excel n'est pas trouvé
+        # Fallback de sécurité
         return pd.DataFrame([
             {"Code Réactif": "REA-BIO-001", "Automate": "Biochimie Auto-1", "Test / Paramètre": "Glycémie", "Stock Actuel (Flacons/Tests)": 500, "Consommation Test/Patient": 1, "Contrôles Std / Série": 1, "Seuil d'Alerte Stock": 100, "Emplacement / Statut": "En Stock", "Date Péremption": "2027-06-30"},
             {"Code Réactif": "REA-HEM-001", "Automate": "Hématologie Sysmex", "Test / Paramètre": "NFS (Formule Sanguine)", "Stock Actuel (Flacons/Tests)": 1200, "Consommation Test/Patient": 1, "Contrôles Std / Série": 2, "Seuil d'Alerte Stock": 200, "Emplacement / Statut": "En Stock", "Date Péremption": "2027-12-15"}
@@ -154,7 +160,7 @@ st.markdown("---")
 if os.path.exists(EXCEL_FILE):
     with open(EXCEL_FILE, "rb") as file:
         st.download_button(
-            label="📥 Télécharger le Fichier Excel du Stock à Jour (`stock_laboratoire_gannouni_exemple.xlsx`)",
+            label="📥 Télécharger le Fichier Excel du Stock à Jour (`stock.xlsx`)",
             data=file,
             file_name="stock_laboratoire_gannouni_mis_a_jour.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
